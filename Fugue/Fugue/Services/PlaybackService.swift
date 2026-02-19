@@ -16,8 +16,10 @@ class PlaybackService {
     var duration: TimeInterval = 0
     var noteSequence: NoteSequence?
     var activeNotes: [NoteEvent] = []
+    private(set) var isScrubbing = false
 
     private var musicPlayer: MusicPlayer?
+    private var wasPlayingBeforeScrub = false
     private var musicSequence: MusicSequence?
     private var currentURL: URL?
     private var timer: Timer?
@@ -81,12 +83,16 @@ class PlaybackService {
     }
 
     func resume() {
-        guard let player = musicPlayer else { return }
+        guard let player = musicPlayer, let sequence = musicSequence else { return }
         if currentPosition >= duration {
-            MusicPlayerSetTime(player, 0)
             currentPosition = 0
         }
+        // Always sync player to currentPosition (may have been scrubbed while paused)
+        var beats: MusicTimeStamp = 0
+        MusicSequenceGetBeatsForSeconds(sequence, currentPosition, &beats)
+        MusicPlayerSetTime(player, beats)
         MusicPlayerStart(player)
+        sendActiveNoteOns()
         state = .playing
         startTimer()
     }
@@ -112,13 +118,50 @@ class PlaybackService {
         activeNotes = []
     }
 
+    func beginScrub() {
+        guard musicPlayer != nil else { return }
+        wasPlayingBeforeScrub = state == .playing
+        isScrubbing = true
+        if let player = musicPlayer {
+            MusicPlayerStop(player)
+        }
+        sendAllNotesOff()
+        stopTimer()
+    }
+
+    func scrub(to position: TimeInterval) {
+        guard musicPlayer != nil else { return }
+        // Visual only — don't touch the player until endScrub
+        currentPosition = position
+        activeNotes = noteSequence?.activeNotes(at: position) ?? []
+    }
+
+    func endScrub() {
+        isScrubbing = false
+        guard let player = musicPlayer, let sequence = musicSequence else { return }
+        // Always move the player to the final scrub position
+        var beats: MusicTimeStamp = 0
+        MusicSequenceGetBeatsForSeconds(sequence, currentPosition, &beats)
+        MusicPlayerSetTime(player, beats)
+        if wasPlayingBeforeScrub {
+            MusicPlayerStart(player)
+            sendActiveNoteOns()
+            state = .playing
+            startTimer()
+        }
+    }
+
     func seek(to position: TimeInterval) {
         guard let player = musicPlayer, let sequence = musicSequence else { return }
+        sendAllNotesOff()
         var beats: MusicTimeStamp = 0
         MusicSequenceGetBeatsForSeconds(sequence, position, &beats)
         MusicPlayerSetTime(player, beats)
         currentPosition = position
         activeNotes = noteSequence?.activeNotes(at: position) ?? []
+        if state == .playing {
+            sendActiveNoteOns()
+        }
     }
 
     // MARK: - Muting
@@ -156,6 +199,77 @@ class PlaybackService {
                 kSequenceTrackProperty_MuteStatus,
                 &muteStatus,
                 UInt32(MemoryLayout<DarwinBoolean>.size)
+            )
+        }
+    }
+
+    // MARK: - Note Chasing
+
+    /// Sends CC#123 (All Notes Off) on every channel to silence the synth immediately.
+    private func sendAllNotesOff() {
+        guard let sequence = musicSequence else { return }
+        var graph: AUGraph?
+        MusicSequenceGetAUGraph(sequence, &graph)
+        guard let graph else { return }
+
+        var synthUnit: AudioUnit?
+        var nodeCount: UInt32 = 0
+        AUGraphGetNodeCount(graph, &nodeCount)
+        for i in 0..<nodeCount {
+            var node = AUNode()
+            AUGraphGetIndNode(graph, i, &node)
+            var desc = AudioComponentDescription()
+            AUGraphNodeInfo(graph, node, &desc, nil)
+            if desc.componentType == kAudioUnitType_MusicDevice {
+                AUGraphNodeInfo(graph, node, nil, &synthUnit)
+                break
+            }
+        }
+        guard let unit = synthUnit else { return }
+
+        for ch: UInt32 in 0..<16 {
+            // CC#123 = All Notes Off
+            MusicDeviceMIDIEvent(unit, 0xB0 | ch, 123, 0, 0)
+        }
+    }
+
+    /// Re-triggers noteOn for all notes that should be sounding at the current position.
+    /// Called on resume/seek so notes whose noteOn occurred before the playhead aren't silent.
+    private func sendActiveNoteOns() {
+        guard let sequence = musicSequence,
+              let notes = noteSequence else { return }
+
+        var graph: AUGraph?
+        MusicSequenceGetAUGraph(sequence, &graph)
+        guard let graph else { return }
+
+        // Find the DLS synthesizer AudioUnit in the graph
+        var synthUnit: AudioUnit?
+        var nodeCount: UInt32 = 0
+        AUGraphGetNodeCount(graph, &nodeCount)
+        for i in 0..<nodeCount {
+            var node = AUNode()
+            AUGraphGetIndNode(graph, i, &node)
+            var desc = AudioComponentDescription()
+            AUGraphNodeInfo(graph, node, &desc, nil)
+            if desc.componentType == kAudioUnitType_MusicDevice {
+                AUGraphNodeInfo(graph, node, nil, &synthUnit)
+                break
+            }
+        }
+        guard let unit = synthUnit else { return }
+
+        let mutedSet = Set(currentSong?.mutedChannels ?? [])
+        let active = notes.activeNotes(at: currentPosition)
+
+        for note in active {
+            if mutedSet.contains(Int(note.channel)) { continue }
+            MusicDeviceMIDIEvent(
+                unit,
+                0x90 | UInt32(note.channel),
+                UInt32(note.noteNumber),
+                UInt32(note.velocity),
+                0
             )
         }
     }

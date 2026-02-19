@@ -43,9 +43,16 @@ struct TransportBar: View {
                 Slider(
                     value: Binding(
                         get: { playbackService.currentPosition },
-                        set: { playbackService.seek(to: $0) }
+                        set: { playbackService.scrub(to: $0) }
                     ),
-                    in: 0...max(playbackService.duration, 0.001)
+                    in: 0...max(playbackService.duration, 0.001),
+                    onEditingChanged: { editing in
+                        if editing {
+                            playbackService.beginScrub()
+                        } else {
+                            playbackService.endScrub()
+                        }
+                    }
                 )
 
                 // Time display
