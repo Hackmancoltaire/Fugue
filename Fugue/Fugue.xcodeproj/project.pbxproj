@@ -1,0 +1,606 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		898D16582F46BE8100E9A2EA /* MIDIKitSMF in Frameworks */ = {isa = PBXBuildFile; productRef = 898D15D12F46B00000E9A2EA /* MIDIKitSMF */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		898D15AA2F46AE2500E9A2EA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 898D15922F46AE2400E9A2EA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 898D15992F46AE2400E9A2EA;
+			remoteInfo = Fugue;
+		};
+		898D15B42F46AE2500E9A2EA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 898D15922F46AE2400E9A2EA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 898D15992F46AE2400E9A2EA;
+			remoteInfo = Fugue;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		898D159A2F46AE2400E9A2EA /* Fugue.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fugue.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		898D15A92F46AE2500E9A2EA /* FugueTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FugueTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		898D15B32F46AE2500E9A2EA /* FugueUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FugueUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		898D159C2F46AE2400E9A2EA /* Fugue */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Fugue;
+			sourceTree = "<group>";
+		};
+		898D15AC2F46AE2500E9A2EA /* FugueTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = FugueTests;
+			sourceTree = "<group>";
+		};
+		898D15B62F46AE2500E9A2EA /* FugueUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = FugueUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		898D15972F46AE2400E9A2EA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				898D16582F46BE8100E9A2EA /* MIDIKitSMF in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		898D15A62F46AE2500E9A2EA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		898D15B02F46AE2500E9A2EA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		898D15912F46AE2400E9A2EA = {
+			isa = PBXGroup;
+			children = (
+				898D159C2F46AE2400E9A2EA /* Fugue */,
+				898D15AC2F46AE2500E9A2EA /* FugueTests */,
+				898D15B62F46AE2500E9A2EA /* FugueUITests */,
+				898D159B2F46AE2400E9A2EA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		898D159B2F46AE2400E9A2EA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				898D159A2F46AE2400E9A2EA /* Fugue.app */,
+				898D15A92F46AE2500E9A2EA /* FugueTests.xctest */,
+				898D15B32F46AE2500E9A2EA /* FugueUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		898D15992F46AE2400E9A2EA /* Fugue */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 898D15BD2F46AE2500E9A2EA /* Build configuration list for PBXNativeTarget "Fugue" */;
+			buildPhases = (
+				898D15962F46AE2400E9A2EA /* Sources */,
+				898D15972F46AE2400E9A2EA /* Frameworks */,
+				898D15982F46AE2400E9A2EA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				898D159C2F46AE2400E9A2EA /* Fugue */,
+			);
+			name = Fugue;
+			packageProductDependencies = (
+				898D15D12F46B00000E9A2EA /* MIDIKitSMF */,
+			);
+			productName = Fugue;
+			productReference = 898D159A2F46AE2400E9A2EA /* Fugue.app */;
+			productType = "com.apple.product-type.application";
+		};
+		898D15A82F46AE2500E9A2EA /* FugueTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 898D15C02F46AE2500E9A2EA /* Build configuration list for PBXNativeTarget "FugueTests" */;
+			buildPhases = (
+				898D15A52F46AE2500E9A2EA /* Sources */,
+				898D15A62F46AE2500E9A2EA /* Frameworks */,
+				898D15A72F46AE2500E9A2EA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				898D15AB2F46AE2500E9A2EA /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				898D15AC2F46AE2500E9A2EA /* FugueTests */,
+			);
+			name = FugueTests;
+			packageProductDependencies = (
+			);
+			productName = FugueTests;
+			productReference = 898D15A92F46AE2500E9A2EA /* FugueTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		898D15B22F46AE2500E9A2EA /* FugueUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 898D15C32F46AE2500E9A2EA /* Build configuration list for PBXNativeTarget "FugueUITests" */;
+			buildPhases = (
+				898D15AF2F46AE2500E9A2EA /* Sources */,
+				898D15B02F46AE2500E9A2EA /* Frameworks */,
+				898D15B12F46AE2500E9A2EA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				898D15B52F46AE2500E9A2EA /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				898D15B62F46AE2500E9A2EA /* FugueUITests */,
+			);
+			name = FugueUITests;
+			packageProductDependencies = (
+			);
+			productName = FugueUITests;
+			productReference = 898D15B32F46AE2500E9A2EA /* FugueUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		898D15922F46AE2400E9A2EA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2620;
+				LastUpgradeCheck = 2620;
+				TargetAttributes = {
+					898D15992F46AE2400E9A2EA = {
+						CreatedOnToolsVersion = 26.2;
+					};
+					898D15A82F46AE2500E9A2EA = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 898D15992F46AE2400E9A2EA;
+					};
+					898D15B22F46AE2500E9A2EA = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 898D15992F46AE2400E9A2EA;
+					};
+				};
+			};
+			buildConfigurationList = 898D15952F46AE2400E9A2EA /* Build configuration list for PBXProject "Fugue" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 898D15912F46AE2400E9A2EA;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				898D15D02F46B00000E9A2EA /* XCRemoteSwiftPackageReference "MIDIKit" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 898D159B2F46AE2400E9A2EA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				898D15992F46AE2400E9A2EA /* Fugue */,
+				898D15A82F46AE2500E9A2EA /* FugueTests */,
+				898D15B22F46AE2500E9A2EA /* FugueUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		898D15982F46AE2400E9A2EA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		898D15A72F46AE2500E9A2EA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		898D15B12F46AE2500E9A2EA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		898D15962F46AE2400E9A2EA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		898D15A52F46AE2500E9A2EA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		898D15AF2F46AE2500E9A2EA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		898D15AB2F46AE2500E9A2EA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 898D15992F46AE2400E9A2EA /* Fugue */;
+			targetProxy = 898D15AA2F46AE2500E9A2EA /* PBXContainerItemProxy */;
+		};
+		898D15B52F46AE2500E9A2EA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 898D15992F46AE2400E9A2EA /* Fugue */;
+			targetProxy = 898D15B42F46AE2500E9A2EA /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		898D15BB2F46AE2500E9A2EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = B78Q78C8RK;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		898D15BC2F46AE2500E9A2EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = B78Q78C8RK;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		898D15BE2F46AE2500E9A2EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B78Q78C8RK;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readwrite;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cyberantics.Fugue;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		898D15BF2F46AE2500E9A2EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B78Q78C8RK;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readwrite;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cyberantics.Fugue;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		898D15C12F46AE2500E9A2EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B78Q78C8RK;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cyberantics.FugueTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Fugue.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Fugue";
+			};
+			name = Debug;
+		};
+		898D15C22F46AE2500E9A2EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B78Q78C8RK;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cyberantics.FugueTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Fugue.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Fugue";
+			};
+			name = Release;
+		};
+		898D15C42F46AE2500E9A2EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B78Q78C8RK;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cyberantics.FugueUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = Fugue;
+			};
+			name = Debug;
+		};
+		898D15C52F46AE2500E9A2EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B78Q78C8RK;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cyberantics.FugueUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = Fugue;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		898D15952F46AE2400E9A2EA /* Build configuration list for PBXProject "Fugue" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				898D15BB2F46AE2500E9A2EA /* Debug */,
+				898D15BC2F46AE2500E9A2EA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		898D15BD2F46AE2500E9A2EA /* Build configuration list for PBXNativeTarget "Fugue" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				898D15BE2F46AE2500E9A2EA /* Debug */,
+				898D15BF2F46AE2500E9A2EA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		898D15C02F46AE2500E9A2EA /* Build configuration list for PBXNativeTarget "FugueTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				898D15C12F46AE2500E9A2EA /* Debug */,
+				898D15C22F46AE2500E9A2EA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		898D15C32F46AE2500E9A2EA /* Build configuration list for PBXNativeTarget "FugueUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				898D15C42F46AE2500E9A2EA /* Debug */,
+				898D15C52F46AE2500E9A2EA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		898D15D02F46B00000E9A2EA /* XCRemoteSwiftPackageReference "MIDIKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/orchetect/MIDIKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		898D15D12F46B00000E9A2EA /* MIDIKitSMF */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 898D15D02F46B00000E9A2EA /* XCRemoteSwiftPackageReference "MIDIKit" */;
+			productName = MIDIKitSMF;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 898D15922F46AE2400E9A2EA /* Project object */;
+}
