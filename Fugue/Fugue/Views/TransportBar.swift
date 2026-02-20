@@ -34,7 +34,18 @@ struct TransportBar: View {
                         Image(systemName: playbackService.state == .playing
                               ? "pause.fill" : "play.fill")
                     }
-                    .keyboardShortcut(.space, modifiers: [])
+
+                    Button {
+                        switch playbackService.repeatMode {
+                        case .off: playbackService.repeatMode = .one
+                        case .one: playbackService.repeatMode = .infinite
+                        case .infinite: playbackService.repeatMode = .off
+                        }
+                    } label: {
+                        Image(systemName: repeatIcon)
+                            .foregroundStyle(playbackService.repeatMode == .off ? .secondary : .primary)
+                    }
+                    .help(repeatHelp)
                 }
                 .buttonStyle(.plain)
                 .font(.title2)
@@ -84,6 +95,22 @@ struct TransportBar: View {
             .padding(.horizontal)
             .padding(.vertical, 8)
             .background(.bar)
+        }
+    }
+
+    private var repeatIcon: String {
+        switch playbackService.repeatMode {
+        case .off: "repeat"
+        case .one: "repeat.1"
+        case .infinite: "repeat"
+        }
+    }
+
+    private var repeatHelp: String {
+        switch playbackService.repeatMode {
+        case .off: "Repeat: Off"
+        case .one: "Repeat: Once"
+        case .infinite: "Repeat: Continuous"
         }
     }
 

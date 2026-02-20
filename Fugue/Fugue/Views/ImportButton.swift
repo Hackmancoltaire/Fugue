@@ -12,22 +12,15 @@ struct ImportButton: View {
         } label: {
             Label("Import", systemImage: "plus")
         }
+        .disabled(libraryManager.isImporting)
         .fileImporter(
             isPresented: $isImporting,
-            allowedContentTypes: [.midi],
+            allowedContentTypes: [.midi, .folder],
             allowsMultipleSelection: true
         ) { result in
             switch result {
             case .success(let urls):
-                for url in urls {
-                    guard url.startAccessingSecurityScopedResource() else { continue }
-                    defer { url.stopAccessingSecurityScopedResource() }
-                    do {
-                        try libraryManager.importMIDIFile(from: url, context: modelContext)
-                    } catch {
-                        print("Import error: \(error)")
-                    }
-                }
+                libraryManager.importURLs(urls, context: modelContext)
             case .failure(let error):
                 print("File selection error: \(error)")
             }

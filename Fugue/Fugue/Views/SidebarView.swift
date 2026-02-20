@@ -3,8 +3,9 @@ import SwiftData
 
 enum SidebarCategory: Hashable {
     case allSongs
-    case artist(String)
-    case album(String)
+    case favorites
+    case artists
+    case albums
     case genre(String)
     case playlist(PersistentIdentifier)
 }
@@ -32,14 +33,6 @@ struct SidebarView: View {
     @Environment(LibraryManager.self) private var libraryManager
     @Environment(\.modelContext) private var modelContext
 
-    private var artists: [String] {
-        Array(Set(songs.map(\.artist))).sorted()
-    }
-
-    private var albums: [String] {
-        Array(Set(songs.map(\.album))).sorted()
-    }
-
     private var genres: [String] {
         Array(Set(songs.map(\.genre).filter { !$0.isEmpty })).sorted()
     }
@@ -53,24 +46,12 @@ struct SidebarView: View {
                         libraryManager.importURLs(urls, context: modelContext)
                         return true
                     }
-            }
-
-            if !artists.isEmpty {
-                Section("Artists") {
-                    ForEach(artists, id: \.self) { artist in
-                        Label(artist, systemImage: "person")
-                            .tag(SidebarCategory.artist(artist))
-                    }
-                }
-            }
-
-            if !albums.isEmpty {
-                Section("Albums") {
-                    ForEach(albums, id: \.self) { album in
-                        Label(album, systemImage: "square.stack")
-                            .tag(SidebarCategory.album(album))
-                    }
-                }
+                Label("Favorites", systemImage: "star.fill")
+                    .tag(SidebarCategory.favorites)
+                Label("Artists", systemImage: "music.mic")
+                    .tag(SidebarCategory.artists)
+                Label("Albums", systemImage: "square.stack")
+                    .tag(SidebarCategory.albums)
             }
 
             if !genres.isEmpty {
@@ -117,18 +98,45 @@ struct SidebarView: View {
         }
         .listStyle(.sidebar)
         .safeAreaInset(edge: .bottom) {
-            HStack {
-                Button {
-                    createPlaylist()
-                } label: {
-                    Image(systemName: "plus")
+            VStack(spacing: 0) {
+                if libraryManager.isImporting {
+                    Divider()
+                    HStack(spacing: 8) {
+                        ProgressView(value: libraryManager.importProgress)
+
+                        Text("\(libraryManager.importCompleted)/\(libraryManager.importTotal)")
+                            .font(.caption)
+                            .monospacedDigit()
+                            .foregroundStyle(.secondary)
+
+                        Button {
+                            libraryManager.cancelImport()
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                        .help("Cancel Import")
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
                 }
-                .buttonStyle(.plain)
-                .help("New Playlist")
-                Spacer()
+
+                Divider()
+
+                HStack {
+                    Button {
+                        createPlaylist()
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .buttonStyle(.plain)
+                    .help("New Playlist")
+                    Spacer()
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
         }
     }
 

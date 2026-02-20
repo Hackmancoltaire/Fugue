@@ -5,6 +5,7 @@ import UniformTypeIdentifiers
 struct SongTableView: View {
     var songs: [Song]
     var playlist: Playlist?
+    var visibleColumns: Set<String>
     @Binding var selection: Set<UUID>
     @Binding var sortOrder: [KeyPathComparator<Song>]
     @Environment(LibraryManager.self) private var libraryManager
@@ -12,32 +13,50 @@ struct SongTableView: View {
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
+        if playlist != nil {
+            playlistTable
+        } else {
+            libraryTable
+        }
+    }
+
+    // MARK: - Library Table (native NSTableView for smooth scrolling)
+
+    private var libraryTable: some View {
+        NativeSongTableView(
+            songs: songs,
+            visibleColumns: visibleColumns,
+            selection: $selection,
+            sortOrder: $sortOrder,
+            onPlay: { playSong($0) },
+            onDelete: { deleteSelectedFromLibrary() },
+            onDrop: { urls in libraryManager.importURLs(urls, context: modelContext) },
+            onToggleFavorite: { $0.isFavorite.toggle() },
+            onShowInFinder: { showInFinder($0) },
+            onSpacebar: { song in handleSpacebar(song) }
+        )
+    }
+
+    // MARK: - Playlist Table (ForEach-based, supports drag reordering)
+
+    private var playlistTable: some View {
         Table(of: Song.self, selection: $selection, sortOrder: $sortOrder) {
-            TableColumn("Title", value: \.title) { song in
-                @Bindable var song = song
-                TextField("", text: $song.title)
-                    .textFieldStyle(.plain)
-                    .onSubmit { song.dateModified = Date() }
+            TableColumn("♥", value: \.title) { song in
+                Button {
+                    song.isFavorite.toggle()
+                } label: {
+                    Image(systemName: song.isFavorite ? "star.fill" : "star")
+                        .foregroundStyle(song.isFavorite ? Color.yellow : Color.gray.opacity(0.3))
+                        .font(.system(size: 12))
+                }
+                .buttonStyle(.plain)
             }
-            TableColumn("Artist", value: \.artist) { song in
-                @Bindable var song = song
-                TextField("", text: $song.artist)
-                    .textFieldStyle(.plain)
-                    .onSubmit { libraryManager.reorganizeSong(song) }
-            }
-            TableColumn("Album", value: \.album) { song in
-                @Bindable var song = song
-                TextField("", text: $song.album)
-                    .textFieldStyle(.plain)
-                    .onSubmit { libraryManager.reorganizeSong(song) }
-            }
-            TableColumn("Genre", value: \.genre) { song in
-                @Bindable var song = song
-                TextField("", text: $song.genre)
-                    .textFieldStyle(.plain)
-                    .onSubmit { song.dateModified = Date() }
-            }
-            .width(min: 60, ideal: 100)
+            .width(32)
+            TableColumn("Title", value: \.title)
+            TableColumn("Artist", value: \.artist)
+            TableColumn("Album", value: \.album)
+            TableColumn("Genre", value: \.genre)
+                .width(min: 60, ideal: 100)
             TableColumn("Duration", value: \.duration) { song in
                 Text(song.formattedDuration)
             }
@@ -51,26 +70,17 @@ struct SongTableView: View {
             }
             .width(min: 50, ideal: 60)
         } rows: {
-            if playlist != nil {
-                ForEach(songs) { song in
-                    TableRow(song)
-                        .draggable(song.id.uuidString)
-                }
-                .onInsert(of: [.plainText]) { index, providers in
-                    handleReorder(at: index, providers: providers)
-                }
-            } else {
-                ForEach(songs) { song in
-                    TableRow(song)
-                        .draggable(song.id.uuidString)
-                }
+            ForEach(songs) { song in
+                TableRow(song)
+                    .draggable(song.id.uuidString)
+            }
+            .onInsert(of: [.plainText]) { index, providers in
+                handleReorder(at: index, providers: providers)
             }
         }
         .dropDestination(for: URL.self) { urls, _ in
             if let playlist {
                 libraryManager.importURLsToPlaylist(urls, playlist: playlist, context: modelContext)
-            } else {
-                libraryManager.importURLs(urls, context: modelContext)
             }
             return true
         }
@@ -80,17 +90,15 @@ struct SongTableView: View {
                     if let song = songFor(ids) { playSong(song) }
                 }
                 Divider()
-                if playlist != nil {
-                    Button("Remove from Playlist") {
-                        removeSelectedFromPlaylist()
-                    }
-                    Button("Delete from Library", role: .destructive) {
-                        deleteSelectedFromLibrary()
-                    }
-                } else {
-                    Button("Delete", role: .destructive) {
-                        deleteSelectedFromLibrary()
-                    }
+                Button("Show in Finder") {
+                    if let song = songFor(ids) { showInFinder(song) }
+                }
+                Divider()
+                Button("Remove from Playlist") {
+                    removeSelectedFromPlaylist()
+                }
+                Button("Delete from Library", role: .destructive) {
+                    deleteSelectedFromLibrary()
                 }
             }
         } primaryAction: { ids in
@@ -99,11 +107,7 @@ struct SongTableView: View {
             }
         }
         .onDeleteCommand {
-            if playlist != nil {
-                removeSelectedFromPlaylist()
-            } else {
-                deleteSelectedFromLibrary()
-            }
+            removeSelectedFromPlaylist()
         }
     }
 
@@ -112,6 +116,19 @@ struct SongTableView: View {
     private func songFor(_ ids: Set<UUID>) -> Song? {
         guard let id = ids.first else { return nil }
         return songs.first { $0.id == id }
+    }
+
+    private func showInFinder(_ song: Song) {
+        guard let url = libraryManager.resolveURL(for: song) else { return }
+        NSWorkspace.shared.activateFileViewerSelecting([url])
+    }
+
+    private func handleSpacebar(_ song: Song?) {
+        if let song, song.id != playbackService.currentSong?.id {
+            playSong(song)
+        } else {
+            playbackService.togglePlayPause()
+        }
     }
 
     private func playSong(_ song: Song) {

@@ -5,6 +5,7 @@ struct SongDetailView: View {
     @Environment(LibraryManager.self) private var libraryManager
     @Environment(PlaybackService.self) private var playbackService
     @FocusState private var focusedField: DetailField?
+    @State private var isLoadingTracks = false
 
     private enum DetailField: Hashable {
         case title, artist, album, genre
@@ -30,6 +31,15 @@ struct SongDetailView: View {
                         .font(.title3)
                         .textFieldStyle(.plain)
                         .focused($focusedField, equals: .album)
+
+                    Button {
+                        song.isFavorite.toggle()
+                    } label: {
+                        Image(systemName: song.isFavorite ? "star.fill" : "star")
+                            .foregroundStyle(song.isFavorite ? .yellow : .secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .help(song.isFavorite ? "Remove from Favorites" : "Add to Favorites")
                 }
 
                 Divider()
@@ -61,6 +71,17 @@ struct SongDetailView: View {
                             countStyle: .file
                         )
                     )
+                    MetadataRow(
+                        label: "Filename",
+                        value: (song.relativePath as NSString).lastPathComponent
+                    )
+                    MetadataRow(label: "Play Count", value: "\(song.playCount)")
+                    if let lastPlayed = song.lastPlayed {
+                        MetadataRow(
+                            label: "Last Played",
+                            value: lastPlayed.formatted(date: .abbreviated, time: .shortened)
+                        )
+                    }
                     MetadataRow(
                         label: "Date Added",
                         value: song.dateAdded.formatted(date: .abbreviated, time: .shortened)
@@ -150,6 +171,11 @@ struct SongDetailView: View {
                             }
                         }
                     }
+                } else if isLoadingTracks {
+                    Divider()
+                    ProgressView()
+                        .controlSize(.small)
+                        .frame(maxWidth: .infinity, alignment: .center)
                 } else if !song.instruments.isEmpty {
                     Divider()
 
@@ -179,21 +205,29 @@ struct SongDetailView: View {
         .onDisappear {
             libraryManager.reorganizeSong(song)
         }
-        .onAppear {
-            backfillTrackInfosIfNeeded()
-        }
-        .onChange(of: song.id) {
-            backfillTrackInfosIfNeeded()
+        .task(id: song.id) {
+            await backfillTrackInfosIfNeeded()
         }
     }
 
-    private func backfillTrackInfosIfNeeded() {
-        guard let url = libraryManager.resolveURL(for: song),
-              let metadata = try? MIDIMetadataExtractor.extract(from: url) else { return }
-        if song.trackInfos != metadata.trackInfos {
-            song.trackInfos = metadata.trackInfos
+    private func backfillTrackInfosIfNeeded() async {
+        guard song.trackInfos.isEmpty else { return }
+        guard let url = libraryManager.resolveURL(for: song) else { return }
+
+        isLoadingTracks = true
+        defer { isLoadingTracks = false }
+
+        let result: (trackInfos: [TrackInfo], channelInstruments: [Int: String])? = await Task.detached {
+            guard let metadata = try? MIDIMetadataExtractor.extract(from: url) else { return nil }
+            return (metadata.trackInfos, metadata.channelInstruments)
+        }.value
+
+        guard let result, !Task.isCancelled else { return }
+
+        if song.trackInfos != result.trackInfos {
+            song.trackInfos = result.trackInfos
         }
-        let freshChannels = metadata.channelInstruments
+        let freshChannels = result.channelInstruments
             .sorted { $0.key < $1.key }
             .map { ChannelInstrument(channel: $0.key, name: $0.value) }
         if song.channelInstruments != freshChannels {

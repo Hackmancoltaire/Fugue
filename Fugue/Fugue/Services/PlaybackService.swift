@@ -1,4 +1,5 @@
 import AudioToolbox
+import CoreMIDI
 import Foundation
 import Observation
 
@@ -10,7 +11,14 @@ class PlaybackService {
         case paused
     }
 
+    enum RepeatMode {
+        case off
+        case one
+        case infinite
+    }
+
     var state: State = .stopped
+    var repeatMode: RepeatMode = .off
     var currentSong: Song?
     var currentPosition: TimeInterval = 0
     var duration: TimeInterval = 0
@@ -18,12 +26,15 @@ class PlaybackService {
     var activeNotes: [NoteEvent] = []
     private(set) var isScrubbing = false
 
+    var midiOutput: MIDIOutputService?
+
     private var musicPlayer: MusicPlayer?
     private var wasPlayingBeforeScrub = false
     private var musicSequence: MusicSequence?
     private var currentURL: URL?
     private var timer: Timer?
     private var sequenceLengthBeats: MusicTimeStamp = 0
+    private var hasRepeated = false
 
     // MARK: - Playback Controls
 
@@ -40,6 +51,8 @@ class PlaybackService {
         self.musicSequence = sequence
         self.currentURL = url
         self.currentSong = song
+        song.lastPlayed = Date()
+        self.hasRepeated = false
 
         // Calculate duration
         self.sequenceLengthBeats = Self.sequenceDurationInBeats(sequence)
@@ -49,6 +62,11 @@ class PlaybackService {
 
         // Apply initial muting
         applyMuting(for: song)
+
+        // Route to external MIDI endpoint if active
+        if let endpoint = midiOutput?.activeEndpoint, endpoint != 0 {
+            MusicSequenceSetMIDIEndpoint(sequence, endpoint)
+        }
 
         // Create and start player
         var player: MusicPlayer?
@@ -99,6 +117,7 @@ class PlaybackService {
 
     func stop() {
         stopTimer()
+        sendAllNotesOff()
         if let player = musicPlayer {
             MusicPlayerStop(player)
             DisposeMusicPlayer(player)
@@ -203,32 +222,34 @@ class PlaybackService {
         }
     }
 
+    // MARK: - External MIDI Routing
+
+    /// Re-routes the active sequence to the current MIDI endpoint (external or local).
+    /// Sends all-notes-off, updates the endpoint, and re-triggers active notes if playing.
+    func rerouteMIDIOutput() {
+        sendAllNotesOff()
+        guard let sequence = musicSequence else { return }
+
+        let endpoint = midiOutput?.activeEndpoint ?? 0
+        MusicSequenceSetMIDIEndpoint(sequence, endpoint)
+
+        if state == .playing {
+            sendActiveNoteOns()
+        }
+    }
+
     // MARK: - Note Chasing
 
     /// Sends CC#123 (All Notes Off) on every channel to silence the synth immediately.
     private func sendAllNotesOff() {
-        guard let sequence = musicSequence else { return }
-        var graph: AUGraph?
-        MusicSequenceGetAUGraph(sequence, &graph)
-        guard let graph else { return }
-
-        var synthUnit: AudioUnit?
-        var nodeCount: UInt32 = 0
-        AUGraphGetNodeCount(graph, &nodeCount)
-        for i in 0..<nodeCount {
-            var node = AUNode()
-            AUGraphGetIndNode(graph, i, &node)
-            var desc = AudioComponentDescription()
-            AUGraphNodeInfo(graph, node, &desc, nil)
-            if desc.componentType == kAudioUnitType_MusicDevice {
-                AUGraphNodeInfo(graph, node, nil, &synthUnit)
-                break
+        if let midiOutput, midiOutput.isExternalOutput {
+            for ch: UInt8 in 0..<16 {
+                midiOutput.sendMIDIEvent(status: 0xB0 | ch, data1: 123, data2: 0)
             }
         }
-        guard let unit = synthUnit else { return }
 
+        guard let unit = dlsSynthUnit() else { return }
         for ch: UInt32 in 0..<16 {
-            // CC#123 = All Notes Off
             MusicDeviceMIDIEvent(unit, 0xB0 | ch, 123, 0, 0)
         }
     }
@@ -236,32 +257,24 @@ class PlaybackService {
     /// Re-triggers noteOn for all notes that should be sounding at the current position.
     /// Called on resume/seek so notes whose noteOn occurred before the playhead aren't silent.
     private func sendActiveNoteOns() {
-        guard let sequence = musicSequence,
-              let notes = noteSequence else { return }
-
-        var graph: AUGraph?
-        MusicSequenceGetAUGraph(sequence, &graph)
-        guard let graph else { return }
-
-        // Find the DLS synthesizer AudioUnit in the graph
-        var synthUnit: AudioUnit?
-        var nodeCount: UInt32 = 0
-        AUGraphGetNodeCount(graph, &nodeCount)
-        for i in 0..<nodeCount {
-            var node = AUNode()
-            AUGraphGetIndNode(graph, i, &node)
-            var desc = AudioComponentDescription()
-            AUGraphNodeInfo(graph, node, &desc, nil)
-            if desc.componentType == kAudioUnitType_MusicDevice {
-                AUGraphNodeInfo(graph, node, nil, &synthUnit)
-                break
-            }
-        }
-        guard let unit = synthUnit else { return }
+        guard let notes = noteSequence else { return }
 
         let mutedSet = Set(currentSong?.mutedChannels ?? [])
         let active = notes.activeNotes(at: currentPosition)
 
+        if let midiOutput, midiOutput.isExternalOutput {
+            for note in active {
+                if mutedSet.contains(Int(note.channel)) { continue }
+                midiOutput.sendMIDIEvent(
+                    status: 0x90 | note.channel,
+                    data1: note.noteNumber,
+                    data2: note.velocity
+                )
+            }
+            return
+        }
+
+        guard let unit = dlsSynthUnit() else { return }
         for note in active {
             if mutedSet.contains(Int(note.channel)) { continue }
             MusicDeviceMIDIEvent(
@@ -274,16 +287,61 @@ class PlaybackService {
         }
     }
 
+    /// Finds the DLS synthesizer AudioUnit in the AUGraph.
+    private func dlsSynthUnit() -> AudioUnit? {
+        guard let sequence = musicSequence else { return nil }
+        var graph: AUGraph?
+        MusicSequenceGetAUGraph(sequence, &graph)
+        guard let graph else { return nil }
+
+        var nodeCount: UInt32 = 0
+        AUGraphGetNodeCount(graph, &nodeCount)
+        for i in 0..<nodeCount {
+            var node = AUNode()
+            AUGraphGetIndNode(graph, i, &node)
+            var desc = AudioComponentDescription()
+            AUGraphNodeInfo(graph, node, &desc, nil)
+            if desc.componentType == kAudioUnitType_MusicDevice {
+                var unit: AudioUnit?
+                AUGraphNodeInfo(graph, node, nil, &unit)
+                return unit
+            }
+        }
+        return nil
+    }
+
     // MARK: - Private
 
     private func handlePlaybackComplete() {
         guard let player = musicPlayer else { return }
         MusicPlayerStop(player)
         currentSong?.playCount += 1
+
+        switch repeatMode {
+        case .infinite:
+            replay()
+            return
+        case .one where !hasRepeated:
+            hasRepeated = true
+            replay()
+            return
+        default:
+            break
+        }
+
         state = .paused
         currentPosition = duration
         activeNotes = []
         stopTimer()
+    }
+
+    private func replay() {
+        guard let player = musicPlayer, let _ = musicSequence else { return }
+        sendAllNotesOff()
+        MusicPlayerSetTime(player, 0)
+        MusicPlayerStart(player)
+        currentPosition = 0
+        activeNotes = []
     }
 
     private static func sequenceDurationInBeats(_ sequence: MusicSequence) -> MusicTimeStamp {

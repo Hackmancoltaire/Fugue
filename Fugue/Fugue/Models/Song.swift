@@ -33,7 +33,10 @@ final class Song {
     var trackInfos: [TrackInfo] = []
     var mutedChannels: [Int] = []
     var playCount: Int = 0
+    var isFavorite: Bool = false
+    var lastPlayed: Date?
     var relativePath: String = ""
+    var md5Hash: String = ""
     var fileSize: Int64 = 0
     var dateAdded: Date = Date()
     var dateModified: Date = Date()
